@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instrumento de Evaluación de Representantes Comerciales - Clop Wines</title>
+    <style>
+        :root {
+            --primary-color: #5c1d24; /* Color vino institucional */
+            --secondary-color: #2c3e50;
+            --light-bg: #f8f9fa;
+            --border-color: #dcdde1;
+            --text-color: #2f3640;
+            --success-color: #27ae60;
+            --warning-color: #e67e22;
+            --danger-color: #c0392b;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: #f1f2f6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 26px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header h2 {
+            color: var(--secondary-color);
+            margin: 5px 0 0 0;
+            font-size: 18px;
+            font-weight: normal;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+            background: var(--light-bg);
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meta-item label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--secondary-color);
+            font-size: 14px;
+        }
+
+        .meta-item input {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            border-left: 5px solid var(--primary-color);
+            padding-left: 10px;
+            margin-top: 35px;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .question-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: box-shadow 0.3s;
+        }
+
+        .question-card:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .question-text {
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+
+        .question-context {
+            font-style: italic;
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .notes-area {
+            width: 100%;
+            height: 60px;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            resize: vertical;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 13px;
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--light-bg);
+        }
+
+        .col-peso, .col-calif, .col-pond {
+            text-align: center;
+            width: 120px;
+        }
+
+        .input-calif {
+            width: 70px;
+            padding: 6px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .input-calif:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .score-display {
+            background: var(--secondary-color);
+            color: white;
+            padding: 25px;
+            border-radius: 6px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .score-num {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #fff;
+        }
+
+        .decision-box {
+            font-size: 20px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 10px;
+            min-width: 250px;
+        }
+
+        .status-outstanding { background-color: var(--success-color); color: white; }
+        .status-eligible { background-color: var(--warning-color); color: white; }
+        .status-rejected { background-color: var(--danger-color); color: white; }
+        .status-pending { background-color: #7f8c8d; color: white; }
+
+        .btn-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 30px;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover { background-color: #4a161c; }
+
+        .btn-secondary {
+            background-color: #7f8c8d;
+            color: white;
+        }
+
+        .btn-secondary:hover { background-color: #616a6b; }
+
+        /* Estilos específicos para Impresión */
+        @media print {
+            body {
+                background-color: #fff;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+                padding: 0;
+                max-width: 100%;
+            }
+            .btn-container, .input-calif::-webkit-inner-spin-button {
+                display: none !important;
+            }
+            .question-card {
+                page-break-inside: avoid;
+            }
+            table {
+                page-break-inside: avoid;
+            }
+            .input-calif {
+                border: none;
+                background: transparent;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Instrumento de Evaluación de Representantes Comerciales</h1>
+        <h2>Para uso exclusivo de Gustavo Clop - Clop Wines</h2>
+    </div>
+
+    <!-- Datos de Cabecera -->
+    <div class="meta-grid">
+        <div class="meta-item">
+            <label>Nombre del Candidato / Distribuidor:</label>
+            <input type="text" placeholder="Ej. Distribuidora Cuyo S.A.">
+        </div>
+        <div class="meta-item">
+            <label>Zona / Mercado a Cubrir:</label>
+            <input type="text" placeholder="Ej. Mendoza - San Luis">
+        </div>
+        <div class="meta-item">
+            <label>Evaluador:</label>
+            <input type="text" value="Gerente de Bodega" readonly style="background-color: #e9ecef;">
+        </div>
+        <div class="meta-item">
+            <label>Fecha de Evaluación:</label>
+            <input type="date" id="currentDate">
+        </div>
+    </div>
+
+    <!-- PARTE 1: GUÍA DE ENTREVISTA -->
+    <h2 class="section-title">Parte 1: Guía de Entrevista Temática e Indagación</h2>
+    
+    <h3 style="color: var(--secondary-color); margin-left: 5px;">Eje 1: Penetración de Mercado y Cartera Activa (Estrategia)</h3>
+    <div class="question-card">
+        <div class="question-text">1. ¿Cuántos clientes activos atiende hoy en la zona asignada que coincidan con nuestro target (vinotecas de alta gama, restaurantes, etc.)? Si mañana incorporamos nuestros productos, ¿a cuántos les presentaría Clop Wines en la primera semana?</div>
+        <div class="question-context">Evalúa: Inmediatez de la red comercial y correspondencia con el posicionamiento de marca.</div>
+        <textarea class="notes-area" placeholder="Escriba aquí las notas de la respuesta y observaciones críticas..."></textarea>
+    </div>
+    <div class="question-card">
+        <div class="question-text">2. Cuénteme sobre alguna marca de vino que haya tomado desde cero en su zona y cómo logró posicionarla. ¿Qué estrategia utilizó para competir contra las marcas ya consolidadas?</div>
+        <div class="question-context">Evalúa: Capacidad de tracción constructiva de marca ("builder") vs mero tomador de pedidos.</div>
+        <textarea class="notes-area" placeholder="Escriba aquí las notas de la respuesta y observaciones críticas..."></textarea>
+    </div>
+
+    <h3 style="color: var(--secondary-color); margin-left: 5px;">Eje 2: Capacidad Comercial y Gestión del Proceso (Procesos)</h3>
+    <div class="question-card">
+        <div class="question-text">3. ¿Cómo planifica su semana y su recorrido de visitas? ¿Qué frecuencia de atención física y virtual le da a las cuentas A, B y C?</div>
+        <div class="question-context">Evalúa: Organización interna, sistemática de ruteo y optimización del tiempo de campo.</div>
+        <textarea class="notes-area" placeholder="Escriba aquí las notas de la respuesta y observaciones críticas..."></textarea>
+    </div>
+    <div class="question-card">
+        <div class="question-text">4. En el contexto macroeconómico actual, ¿cómo maneja la cadena de pagos y los plazos de cuenta corriente para evitar que la inflación licúe la rentabilidad de la bodega? ¿Qué acciones toma ante un atraso?</div>
+        <div class="question-context">Evalúa: Perfil de riesgo crediticio, rigurosidad en cobranzas y responsabilidad financiera.</div>
+        <textarea class="notes-area" placeholder="Escriba aquí las notas de la respuesta y observaciones críticas..."></textarea>
+    </div>
+
+    <h3 style="color: var(--secondary-color); margin-left: 5px;">Eje 3: Perfil Técnico, Aptitudes y Cultura (Personas)</h3>
+    <div class="question-card">
+        <div class="question-text">5. ¿Qué nivel de formación enológica posee? ¿Se siente cómodo guiando una cata para los mozos de un restaurante o los vendedores de una vinoteca para que sepan vender nuestro vino?</div>
+        <div class="question-context">Evalúa: Habilidades técnicas del producto, capacidad formativa ("train the trainer") y pasión transmitida.</div>
+        <textarea class="notes-area" placeholder="Escriba aquí las notas de la respuesta y observaciones críticas..."></textarea>
+    </div>
+
+    <h3 style="color: var(--secondary-color); margin-left: 5px;">Eje 4: Propuesta Logística e Infraestructura Operativa</h3>
+    <div class="question-card">
+        <div class="question-text">6. ¿Dónde y en qué condiciones se almacenarían nuestros vinos? ¿El depósito cuenta con aislamiento térmico o control de temperatura para proteger la calidad de los productos?</div>
+        <div class="question-context">Evalúa: Resguardo de los estándares de calidad del producto final y prevención de mermas.</div>
+        <textarea class="notes-area" placeholder="Escriba aquí las notas de la respuesta y observaciones críticas..."></textarea>
+    </div>
+
+
+    <!-- PARTE 2: MATRIZ DE CALIFICACIÓN -->
+    <h2 class="section-title">Parte 2: Matriz Cuantitativa de Ponderación</h2>
+    <p style="font-size: 14px; color: #555; margin-bottom: 15px;">Asigne una calificación de <strong>1 a 5</strong> para cada criterio (1: Muy Deficiente, 3: Aceptable, 5: Excelente). El sistema calculará automáticamente las ponderaciones finales.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Eje Estratégico</th>
+                <th>Variable de Criterio Técnico</th>
+                <th class="col-peso">Peso (%)</th>
+                <th class="col-calif">Calificación (1-5)</th>
+                <th class="col-pond">Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>1. Estrategia y Mercado</strong></td>
+                <td>Volumen y calidad de cartera de clientes activa alineada</td>
+                <td class="col-peso" data-peso="15">15%</td>
+                <td class="col-calif"><input type="number" min="1" max="5" class="input-calif" onchange="calcularMatriz()" value="0"></td>
+                <td class="col-pond" id="p1">0.00</td>
+            </tr>
+            <tr>
+                <td><strong>1. Estrategia y Mercado</strong></td>
+                <td>Capacidad demostrada para desarrollar marcas desde cero</td>
+                <td class="col-peso" data-peso="10">10%</td>
+                <td class="col-calif"><input type="number" min="1" max="5" class="input-calif" onchange="calcularMatriz()" value="0"></td>
+                <td class="col-pond" id="p2">0.00</td>
+            </tr>
+            <tr>
+                <td><strong>2. Procesos Comerciales</strong></td>
+                <td>Sistemática de ruteo, visitas y estructuración de agenda</td>
+                <td class="col-peso" data-peso="10">10%</td>
+                <td class="col-calif"><input type="number" min="1" max="5" class="input-calif" onchange="calcularMatriz()" value="0"></td>
+                <td class="col-pond" id="p3">0.00</td>
+            </tr>
+            <tr>
+                <td><strong>2. Procesos Comerciales</strong></td>
+                <td>Gestión y rigor en políticas de cobro y riesgo financiero</td>
+                <td class="col-peso" data-peso="10">10%</td>
+                <td class="col-calif"><input type="number" min="1" max="5" class="input-calif" onchange="calcularMatriz()" value="0"></td>
+                <td class="col-pond" id="p4">0.00</td>
+            </tr>
+            <tr>
+                <td><strong>2. Procesos Comerciales</strong></td>
+                <td>Adopción de herramientas de reporte digital y CRM</td>
+                <td class="col-peso" data-peso="5">5%</td>
+                <td class="col-calif"><input type="number" min="1" max="5" class="input-calif" onchange="calcularMatriz()" value="0"></td>
+                <td class="col-pond" id="p5">0.00</td>
+            </tr>
+            <tr>
+                <td><strong>3. Personas y Cultura</strong></td>
+                <td>Formación técnica comercial y habilidades de cata</td>
+                <td class="col-peso" data-peso="10">10%</td>
+                <td class="col-calif"><input type="number" min="1" max="5" class="input-calif" onchange="calcularMatriz()" value="0"></td>
+                <td class="col-pond" id="p6">0.00</td>
+            </tr>
+            <tr>
+                <td><strong>3. Personas y Cultura</strong></td>
+                <td>Ética, transparencia y alineación con empresas familiares</td>
+                <td class="col-peso" data-peso="15">15%</td>
+                <td class="col-calif"><input type="number" min="1" max="5" class="input-calif" onchange="calcularMatriz()" value="0"></td>
+                <td class="col-pond" id="p7">0.00</td>
+            </tr>
+            <tr>
+                <td><strong>4. Infraestructura</strong></td>
+                <td>Calidad del depósito e instalaciones (Cuidado de temperatura)</td>
+                <td class="col-peso" data-peso="15">15%</td>
+                <td class="col-calif"><input type="number" min="1" max="5" class="input-calif" onchange="calcularMatriz()" value="0"></td>
+                <td class="col-pond" id="p8">0.00</td>
+            </tr>
+            <tr>
+                <td><strong>4. Infraestructura</strong></td>
+                <td>Capilaridad logística, capataces y tiempos de entrega de pedidos</td>
+                <td class="col-peso" data-peso="10">10%</td>
+                <td class="col-calif"><input type="number" min="1" max="5" class="input-calif" onchange="calcularMatriz()" value="0"></td>
+                <td class="col-pond" id="p9">0.00</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- PANEL DE RESULTADOS AUTOMÁTICOS -->
+    <div class="score-display">
+        <h3>ÍNDICE DE IDONEIDAD COMERCIAL PONDERADO</h3>
+        <div class="score-num" id="globalScore">0.00</div>
+        <div class="decision-box status-pending" id="decisionStatus">Esperando Calificaciones...</div>
+    </div>
+
+    <!-- BOTONERA DE CONTROL -->
+    <div class="btn-container">
+        <button class="btn btn-secondary" onclick="window.print()">Imprimir / Guardar PDF</button>
+        <button class="btn btn-primary" onclick="reiniciarFormulario()">Limpiar Formulario</button>
+    </div>
+</div>
+
+<script>
+    // Configura la fecha actual por defecto
+    document.getElementById('currentDate').valueAsDate = new Date();
+
+    function calcularMatriz() {
+        const filas = document.querySelectorAll('tbody tr');
+        let sumaPonderada = 0;
+        let totalPesos = 0;
+
+        filas.forEach((fila, index) => {
+            const peso = parseFloat(fila.querySelector('.col-peso').getAttribute('data-peso'));
+            const inputVal = fila.querySelector('.input-calif');
+            let calificacion = parseFloat(inputVal.value) || 0;
+
+            // Validación de límites de escala 1-5
+            if (calificacion > 5) { calificacion = 5; inputVal.value = 5; }
+            if (calificacion < 0) { calificacion = 0; inputVal.value = 0; }
+
+            const subtotal = (calificacion * peso) / 100;
+            fila.querySelector('.col-pond').innerText = subtotal.toFixed(2);
+            
+            if (calificacion > 0) {
+                sumaPonderada += subtotal;
+            }
+            totalPesos += peso;
+        });
+
+        // Multiplicar el resultado ponderado para llevarlo a la escala base (ajustado sobre 100% de pesos)
+        // El puntaje final reflejará directamente la escala 1-5
+        actualizarIndicadorGlobal(sumaPonderada);
+    }
+
+    function actualizarIndicadorGlobal(score) {
+        const scoreElement = document.getElementById('globalScore');
+        const decisionElement = document.getElementById('decisionStatus');
+        
+        // Multiplicador de escala si todas las entradas tienen valor
+        scoreElement.innerText = score.toFixed(2);
+
+        // Remover clases previas
+        decisionElement.className = "decision-box";
+
+        if(score === 0) {
+            decisionElement.innerText = "Esperando Calificaciones...";
+            decisionElement.classList.add('status-pending');
+        } else if (score >= 4.1) {
+            decisionElement.innerText = "REPRESENTANTE DESTACADO (Contratación Prioritaria)";
+            decisionElement.classList.add('status-outstanding');
+        } else if (score >= 3.0) {
+            decisionElement.innerText = "ELEGIBLE CON CONDICIONES (Plan de Desarrollo)";
+            decisionElement.classList.add('status-eligible');
+        } else {
+            decisionElement.innerText = "NO ELEGIBLE (No cumple Estándares)";
+            decisionElement.classList.add('status-rejected');
+        }
+    }
+
+    function reiniciarFormulario() {
+        if(confirm("¿Está seguro de que desea limpiar todos los datos e iniciar una nueva evaluación?")) {
+            const inputs = document.querySelectorAll('.input-calif');
+            inputs.forEach(input => input.value = 0);
+            const notes = document.querySelectorAll('.notes-area');
+            notes.forEach(note => note.value = "");
+            const inputsText = document.querySelectorAll('.meta-grid input:not([readonly])');
+            inputsText.forEach(input => input.value = "");
+            document.getElementById('currentDate').valueAsDate = new Date();
+            calcularMatriz();
+        }
+    }
+</script>
+
+</body>
+</html>
